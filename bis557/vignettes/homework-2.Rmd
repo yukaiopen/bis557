@@ -18,9 +18,39 @@ knitr::opts_chunk$set(
 library(bis557)
 ```
 
-```{r}
-```
+
+
 ![Q1](bis557-1.jpg)
+#answer to question 4
+```{r}
+library(casl)
+#reproduce the result from textbook CASL : the code is from the book
+n <- 1000; p <- 25
+beta <- c(1, rep(0, p - 1))
+X <- matrix(rnorm(n * p), ncol = p)
+svals <- svd(X)$d
+max(svals) / min(svals)
+
+```
+```{r}
+N <- 1e4; l2_errors <- rep(0, N)
+for (k in 1:N) {
+  y <- X %*% beta + rnorm(n)
+  betahat <- casl_ols_svd(X, y)
+l2_errors[k] <- sqrt(sum((betahat - beta)^2))
+}
+mean(l2_errors)
+
+```
+
+
+```{r}
+alpha <- 0.001
+X[,1] <- X[,1] * alpha + X[,2] * (1 - alpha)
+svals <- svd(X)$d
+#  condition number increased significantly
+max(svals) / min(svals)
+```
 
 
 ![Q5](bis557-5.png)
